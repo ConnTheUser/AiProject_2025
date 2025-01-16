@@ -135,7 +135,7 @@ export function PreCode(props: { children: any }) {
   const [isMatlabAvailable, setIsMatlabAvailable] = useState(false);
 
   useEffect(() => {
-    fetch('http://127.0.0.1:8080/executeMatlabCode',{
+    fetch('http://127.0.0.1:8080/getMatlabInstalledStatus',{
         method: 'POST',
         headers: {
           'Content-Type': 'application/json;charset=UTF-8'
@@ -143,6 +143,7 @@ export function PreCode(props: { children: any }) {
     })
       .then(response => response.json())
       .then(data => {
+        console.log('MATLAB installation status:', data.isInstalled);
         setIsMatlabAvailable(data.isInstalled)
         console.log('MATLAB installation status:', isMatlabAvailable);
       })
