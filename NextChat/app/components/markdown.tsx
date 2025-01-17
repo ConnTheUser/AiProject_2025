@@ -27,6 +27,9 @@ import clsx from "clsx";
 import { method } from "lodash-es";
 import { POST } from '../api/upstash/[action]/[...key]/route';
 
+import { useGlobalState } from '../../contexts/GlobalStateContext';
+
+
 export function Mermaid(props: { code: string }) {
   const ref = useRef<HTMLDivElement>(null);
   const [hasError, setHasError] = useState(false);
@@ -82,6 +85,9 @@ export function PreCode(props: { children: any }) {
   const chatStore = useChatStore();
   const session = chatStore.currentSession();
 
+  const { isMatlabInstalled } = useGlobalState();
+
+
   const renderArtifacts = useDebouncedCallback(() => {
     if (!ref.current) return;
     const mermaidDom = ref.current.querySelector("code.language-mermaid");
@@ -132,24 +138,22 @@ export function PreCode(props: { children: any }) {
     }
   }, []);
 
-  const [isMatlabAvailable, setIsMatlabAvailable] = useState(false);
+  //   const [isMatlabAvailable, setIsMatlabAvailable] = useState(false);
 
-  useEffect(() => {
-    fetch('http://127.0.0.1:8080/getMatlabInstalledStatus',{
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json;charset=UTF-8'
-        }
-    })
-      .then(response => response.json())
-      .then(data => {
-        console.log('MATLAB installation status:', data.isInstalled);
-        setIsMatlabAvailable(data.isInstalled)
-        console.log('MATLAB installation status:', isMatlabAvailable);
-      })
-      .catch(error => console.error('Error checking MATLAB installation:', error));
-  }, []);
-
+  // useEffect(() => {
+  //   fetch('http://127.0.0.1:8080/getMatlabInstalledStatus', {
+  //     method: 'POST',
+  //     headers: {
+  //       'Content-Type': 'application/json;charset=UTF-8'
+  //     }
+  //   })
+  //   .then(response => response.json())
+  //   .then(data => {
+  //     console.log('MATLAB installation status:', data.isInstalled);
+  //     setIsMatlabAvailable(data.isInstalled);
+  //   })
+  //   .catch(error => console.error('Error checking MATLAB installation:', error));
+  // }, []); // 空依赖数组表示仅在组件挂载时执行
 
   return (
     <>
@@ -164,7 +168,7 @@ export function PreCode(props: { children: any }) {
             }
           }}
         ></span>
-        {isMatlabAvailable && (
+        {isMatlabInstalled && (
         <span
           className="run-code-button"
           onClick={() => {
